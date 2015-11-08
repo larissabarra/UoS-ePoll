@@ -1,0 +1,32 @@
+<% content_for(:page_header){"Use our polls system right now"} %>
+
+<section class="well left_50">
+	<h2>Create your account</h2>
+
+	<form name="newUser">
+		<label for="name">Name:</label><br/>
+		<input type="text" name="name" id="name" /><br/>
+		<label for="email">University e-mail:</label><br/>
+		<input type="text" name="email" id="email"/><br/>
+		<label for="password">Password:</label><br/>
+		<input type="password" name="password" id="password" /><br/>
+		<label for="confirm">Confirm your password:</label><br/>
+		<input type="password" name="confirmPassword" id="confirm" /><br/><br/>
+		<input type="submit" value="Create"/>
+	</form>
+
+</section>
+
+<section class="well right_50">
+	<h2>Login</h2>
+
+	<form name="login">
+		<label for="email_login">University e-mail:</label><br/>
+		<input type="text" name="email" id="email_login" /><br/>
+		<label for="password_login">Password:</label><br/>
+		<input type="password" name="password" id="password_login" /><br/><br/>
+		<input type="submit" value="Log in"/>
+	</form>
+
+</section>
+<div class="clear"></div>

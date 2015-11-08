@@ -1,0 +1,111 @@
+<section class="left_25 white">
+	<h2 class="margin_10">New poll</h2>
+	<img src="assets/iconSingle.png"/>
+	<img src="assets/iconMultiple.png"/>
+	<img src="assets/iconRelate.png"/>
+	<hr/>
+	<h2 class="margin_10">Your polls</h2>
+<% @polls.each do |poll| %>
+	<div class="well">
+		<h3><%= poll.topic %></h3>
+
+		<div class="btn-group">
+			<%= link_to 'Edit', edit_poll_path(poll), class: 'btn btn-default' %>
+			<%= link_to 'Delete', poll_path(poll), method: :delete, class: 'btn btn-ganger', data: {confirm: 'Are you sure?'} %>
+			<%= link_to 'Open/close', edit_poll_path(poll), class: 'btn btn-default' %>
+			<%= link_to 'Stats', poll_path(poll), method: :delete, class: 'btn btn-ganger', data: {confirm: 'Are you sure?'} %>
+		</div>
+	</div>
+<% end %>
+</section>
+<section id="board" class="right_75">
+	<article class="question ui-widget-header" id="question1">
+		<header>
+			pergunta 1
+			<nav class="navbar-nav">
+				<a href="/"><img src="assets/iconOpen.png"/></a>
+				<a href="/"><img src="assets/iconStats.png"/></a>
+				<a href="/"><img src="assets/iconEdit.png"/></a>
+				<a href="/"><img src="assets/iconBin.png"/></a>
+			</nav>
+		</header>
+		<p>asdjfaçdslkjfsalkjsçlkfjsaklçdjslkjçlksfjsa</p>
+		<ul>
+			<li id="q1o1">opcoes</li>
+			<li id="q1o2">opcoes</li>
+			<li id="q1o3">opcoes</li>
+		</ul>
+	</article>
+
+	<article class="question ui-widget-header" id="question2">
+		<header>
+			pergunta 2
+			<nav class="navbar-nav">
+				<a href="/"><img src="assets/iconOpen.png"/></a>
+				<a href="/"><img src="assets/iconStats.png"/></a>
+				<a href="/"><img src="assets/iconEdit.png"/></a>
+				<a href="/"><img src="assets/iconBin.png"/></a>
+			</nav>
+		</header>
+		<p>asdjfaçdslkjfsalkjsçlkfjsaklçdjslkjçlksfjsa</p>
+		<ul>
+			<li id="q2o1">opcoes</li>
+			<li id="q2o2">opcoes</li>
+			<li id="q2o3">opcoes</li>
+		</ul>
+	</article>
+</section>
+
+<script>
+window.setZoom = function(zoom, instance, transformOrigin, el) {
+  transformOrigin = transformOrigin || [ 0.5, 0.5 ];
+  instance = instance || jsPlumb;
+  el = el || instance.getContainer();
+  var p = [ "webkit", "moz", "ms", "o" ],
+      s = "scale(" + zoom + ")",
+      oString = (transformOrigin[0] * 100) + "% " + (transformOrigin[1] * 100) + "%";
+
+  for (var i = 0; i < p.length; i++) {
+    el.style[p[i] + "Transform"] = s;
+    el.style[p[i] + "TransformOrigin"] = oString;
+  }
+
+  el.style["transform"] = s;
+  el.style["transformOrigin"] = oString;
+
+  instance.setZoom(zoom);    
+};
+	$(function() {
+		$(".question").draggable();
+		jsPlumb.draggable($(".question"), {
+  			containment:$("#board")
+		});
+		$( "#board" ).droppable();
+	});
+  	jsPlumb.ready(function() {
+  		jsPlumb.setContainer($("#board"));
+    	jsPlumb.importDefaults({
+  			Connector : [ "Bezier", { curviness: 150 } ],
+  			DragOptions : { cursor: "crosshair" },
+  			Anchors : [ "Right", "Left" ],
+			PaintStyle:{ 
+			    lineWidth:2, 
+			    strokeStyle:"#567567", 
+			    outlineWidth:0
+			},
+			Endpoint:[ "Dot", { radius:3 } ],
+			EndpointStyle : { fillStyle: "#567567"  },
+			Anchor : [ 0.5, 0.5, 1, 1 ]
+		});
+
+    	var common = {
+  			deleteEndpointsOnDetach: false
+		};
+    	var connections = [{ source:$("#q1o1"), target:$("#q2o3")}];
+    	jsPlumb.batch(function() {
+  			for (var i = 0, j = connections.length; i < j; i++) {
+      			jsPlumb.connect(connections[i], common);
+  			}
+		});
+	});
+  </script>

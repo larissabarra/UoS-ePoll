@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EPoll</title>
+  <link rel="stylesheet" type="text/css" href="assets/style.css">
+  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script src="assets/dom.jsPlumb-min.js "></script>
+  <script src="assets/jquery.ui.touch-punch.min.js"></script>
+
+  <script>
+
+  	var form1 = "<form id='type1'>Question<br/><input type='text' name='question' id='question'><br/><input type='radio' name='sex' value='correct' checked><input type='text' id='option1'/><br><input type='radio' name='sex' value='correct' checked><input type='text' id='option2'/><br/><button type='button' onclick='addtype1()'>Add</button></form>";
+  	var form2 = "<form id='type2'>Question<br/><input type='text'><br/><input type='checkbox' name='sex' value='correct' checked><input type='text'/><br><input type='checkbox' name='sex' value='correct' checked><input type='text'/><br/><button type='button'>Add</button></form>";
+  	var form3 = "<form id='type3'>Question<br/><input type='text'><br/><input type='radio' name='sex' value='correct' checked><input type='text'/><br><input type='radio' name='sex' value='correct' checked><input type='text'/><br/><button type='button'>Add</button></form>";
+  	
+  	var fillform = function(type) {
+  		switch (type) {
+  			case 1:
+  				$("#new_question").html(form1);
+  				break;
+  			case 2:
+  				$("#new_question").html(form2);
+  				break;
+  			case 3:
+  				$("#new_question").html(form2);
+  				break;
+  		}
+  	}
+
+  	var addtype1 = function () {
+  		alert("entrou");
+  		var question = $("#type1 #question").val();
+  		var options = []; 
+  		$("#type1 input[type='text']").each(function() {
+  			options.push($(this).val());
+  		});
+  		var radioButtons = $("#type1 input:radio[name='sex']");
+		var selectedIndex = radioButtons.index(radioButtons.filter(':checked'));
+  		var questionbox = '<article class="question ui-widget-header" id="question3" style="top:10;left:10;">' +
+			'<header>' +
+				'pergunta 1' +
+				'<nav class="navbar-nav">' +
+					'<a href="/"><img src="assets/iconOpen.png"/></a>' +
+					'<a href="/"><img src="assets/iconStats.png"/></a>' +
+					'<a href="/"><img src="assets/iconEdit.png"/></a>' +
+					'<a href="/"><img src="assets/iconBin.png"/></a>' +
+				'</nav>' +
+			'</header>' +
+			'<p>'+ question +'</p>' +
+			'<ul>';
+
+		for (var i = 0; i < options.length; i++) {
+			questionbox += '<li id="q1o'+i+'"';
+			if (i == selectedIndex) questionbox += ' class="correct"';
+			questionbox += '>'+options[i]+'</li>';
+		}
+		questionbox += '</ul></article>';
+
+		$("#board").append(questionbox);
+		$("#question3").draggable();
+	    //instance.addEndpoints($("#question3").attr("id"), ["TopRight"], ["TopLeft"]);
+	    //instance.addEndpoints($("#question3 li").attr("id"), ["RightMiddle"], [""]);
+  	}
+
+  </script>
+</head>
+<body>
+	<header class="navbar navbar-inverse">
+		<div class="container">
+			<div class="navbar-header">
+				<a href="/"><img src="assets/surrey.png"/><img src="assets/logo.png"/></a>
+			</div>
+			<ul class="nav navbar-nav">
+				<li>add poll</li>
+				<li>log out</li>
+			</ul>
+		</div>
+	</header>
+
+	<section id="content">
+	<section class="left_25 white">
+		<h2 class="margin_10">New poll</h2>
+		<img src="assets/iconSingle.png" onclick="fillform(1)" />
+		<img src="assets/iconMultiple.png" onclick="fillform(2)"/>
+		<img src="assets/iconRelate.png" onclick="fillform(3)"/>
+		<hr/>
+		<h2 class="margin_10">Question</h2>
+		<div id="new_question" class="well poll">
+			
+		</div>
+	</section>
+
+	<section id="board" class="right_75">
+		<input type="text" id="poll_title"/>
+		<article class="question ui-widget-header" id="question1">
+			<header>
+				pergunta 1
+				<nav class="navbar-nav">
+					<a href="/"><img src="assets/iconEdit.png"/></a>
+					<a href="/"><img src="assets/iconBin.png"/></a>
+				</nav>
+			</header>
+			<p>question text</p>
+			<ul>
+				<li id="q1o1">opcoes</li>
+				<li id="q1o2" class="correct">opcoes</li>
+				<li id="q1o3">opcoes</li>
+			</ul>
+		</article>
+
+		<article class="question ui-widget-header" id="question2">
+			<header>
+				pergunta 2
+				<nav class="navbar-nav">
+					<a href="/"><img src="assets/iconEdit.png"/></a>
+					<a href="/"><img src="assets/iconBin.png"/></a>
+				</nav>
+			</header>
+			<p>other question text</p>
+			<ul>
+				<li id="q2o1" class="correct">opcoes</li>
+				<li id="q2o2">opcoes</li>
+				<li id="q2o3">opcoes</li>
+			</ul>
+		</article>
+		<button type="button" onclick="getDataAndSave()">Save</button>
+	</section>
+
+<script>
+
+	var getDataAndSave = function () {
+		var myObject = new Object();
+		myObject.title = $("#poll_title").val();
+		myObject.questions = [];
+		$(".question").each(function() {
+			var question = new Object();
+			question.txt = $(this).find("p").text();
+			question.opts = [];
+			$(this).find("li").each(function() {
+				var option = $(this).text();
+				if ($(this).hasClass("correct")) option += " :correct";
+				question.opts.push(option);
+			});
+			myObject.questions.push(question);
+		});
+		alert(JSON.stringify(myObject));
+	};
+
+	window.setZoom = function(zoom, instance, transformOrigin, el) {
+  		transformOrigin = transformOrigin || [ 0.5, 0.5 ];
+  		instance = instance || jsPlumb;
+  		el = el || instance.getContainer();
+  		var p = [ "webkit", "moz", "ms", "o" ],
+      		s = "scale(" + zoom + ")",
+      		oString = (transformOrigin[0] * 100) + "% " + (transformOrigin[1] * 100) + "%";
+
+  		for (var i = 0; i < p.length; i++) {
+    		el.style[p[i] + "Transform"] = s;
+    		el.style[p[i] + "TransformOrigin"] = oString;
+  		}
+
+  		el.style["transform"] = s;
+  		el.style["transformOrigin"] = oString;
+
+  		instance.setZoom(zoom);    
+	};
+
+	$(function() {
+		$(".question").draggable();
+		$( "#board" ).droppable();
+	});
+
+	jsPlumb.ready(function () {
+	    var instance = jsPlumb.getInstance({
+	        // default drag options
+	        DragOptions: { cursor: 'pointer' },
+	        Container: $("#board")
+	    });
+
+	    var basicType = {
+	        connector: "StateMachine",
+	        paintStyle: { strokeStyle: "red", lineWidth: 4 },
+	        hoverPaintStyle: { strokeStyle: "blue" }
+	    };
+	    instance.registerConnectionType("basic", basicType);
+
+	    // this is the paint style for the connecting lines..
+	    var connectorPaintStyle = {
+	            lineWidth: 2,
+	            strokeStyle: "#61B7CF",
+	            joinstyle: "round",
+	            outlineWidth: 0
+	        },
+	    // .. and this is the hover style.
+	        connectorHoverStyle = {
+	            lineWidth: 2,
+	            strokeStyle: "#216477",
+	            outlineWidth: 0
+	        },
+	        endpointHoverStyle = {
+	            fillStyle: "#216477",
+	            strokeStyle: "#216477"
+	        },
+	    // the definition of source endpoints (the small blue ones)
+	        sourceEndpoint = {
+	            endpoint: ["Dot", { radius:3 }],
+	            paintStyle: {
+	                strokeStyle: "#007272",
+	                fillStyle: "transparent",
+	                lineWidth: 2
+	            },
+	            isSource: true,
+	            Connector : [ "Flowchart", { stub: [40, 60], gap: 10, cornerRadius: 5, alwaysRespectStubs: true } ],
+	            connectorStyle: connectorPaintStyle,
+	            hoverPaintStyle: endpointHoverStyle,
+	            connectorHoverStyle: connectorHoverStyle,
+	            dragOptions: {}
+	        },
+	    // the definition of target endpoints (will appear when the user drags a connection)
+	        targetEndpoint = {
+	            endpoint: ["Dot", { radius:5 }],
+	            paintStyle: { fillStyle: "#008e9b" },
+	            hoverPaintStyle: endpointHoverStyle,
+	            maxConnections: -1,
+	            allowLoopback:false,
+	            dropOptions: { hoverClass: "hover", activeClass: "active" },
+	            isTarget: true
+	        },
+	        init = function (connection) {
+	            alert(connection.sourceId + "-" + connection.targetId);
+	        };
+
+	    var _addEndpoints = function (toId, sourceAnchors, targetAnchors) {
+	        for (var i = 0; i < sourceAnchors.length; i++) {
+	            var sourceUUID = toId + sourceAnchors[i];
+	            instance.addEndpoint("" + toId, sourceEndpoint, {
+	                anchor: sourceAnchors[i], uuid: sourceUUID
+	            });
+	        }
+	        if(/question/i.test(toId) == true)
+		        for (var j = 0; j < targetAnchors.length; j++) {
+		            var targetUUID = toId + targetAnchors[j];
+		            instance.addEndpoint("" + toId, targetEndpoint, { anchor: targetAnchors[j], uuid: targetUUID });
+		        }
+	    };
+
+	    // suspend drawing and initialise.
+	    instance.batch(function () {
+
+	        $(".question").each(function() {
+	            _addEndpoints($(this).attr("id"), ["TopRight"], ["TopLeft"]);
+	        });
+	        $(".question li").each(function() {
+	            _addEndpoints($(this).attr("id"), ["RightMiddle"], [""]);
+	        });
+
+	        // listen for new connections; initialise them the same way we initialise the connections at startup.
+	        instance.bind("connection", function (connInfo, originalEvent) {
+	            init(connInfo.connection);
+	        });
+
+	        // make all the window divs draggable
+	        instance.draggable($(".question"), { grid: [20, 20] });
+	        // THIS DEMO ONLY USES getSelector FOR CONVENIENCE. Use your library's appropriate selector
+	        // method, or document.querySelectorAll:
+	        //jsPlumb.draggable(document.querySelectorAll(".window"), { grid: [20, 20] });
+	        //
+	        // listen for clicks on connections, and offer to delete connections on click.
+	        //
+	        instance.bind("click", function (conn, originalEvent) {
+	           // if (confirm("Delete connection from " + conn.sourceId + " to " + conn.targetId + "?"))
+	             //   instance.detach(conn);
+	            conn.toggleType("basic");
+	        });
+
+	        instance.bind("connectionDrag", function (connection) {
+	            console.log("connection " + connection.id + " is being dragged. suspendedElement is ", connection.suspendedElement, " of type ", connection.suspendedElementType);
+	        });
+
+	        instance.bind("connectionDragStop", function (connection) {
+	            console.log("connection " + connection.id + " was dragged");
+	        });
+
+	        instance.bind("connectionMoved", function (params) {
+	            console.log("connection " + params.connection.id + " was moved");
+	        });
+	    });
+
+	    jsPlumb.fire("jsPlumbLoaded", instance);
+
+	});
+</script>
+</section>
+
+</body>
+</html>
+
+

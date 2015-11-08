@@ -1,0 +1,24 @@
+<% content_for(:page_header){"Control panel"} %>
+
+<section class="left_70 white">
+	<h2>Your polls</h2>
+<% @polls.each do |poll| %>
+	<div class="well">
+		<h3><%= poll.topic %></h3>
+
+		<div class="btn-group">
+			<%= link_to 'Edit', edit_poll_path(poll), class: 'btn btn-default' %>
+			<%= link_to 'Delete', poll_path(poll), method: :delete, class: 'btn btn-ganger', data: {confirm: 'Are you sure?'} %>
+			<%= link_to 'Open/close', edit_poll_path(poll), class: 'btn btn-default' %>
+			<%= link_to 'Stats', poll_path(poll), method: :delete, class: 'btn btn-ganger', data: {confirm: 'Are you sure?'} %>
+		</div>
+	</div>
+<% end %>
+</section>
+<section class="right_30 white">
+	<h2>New poll</h2>
+	<p><%= link_to 'Multiple choice', class: 'btn btn-default' %></p>
+	<p><%= link_to 'Relate columns', class: 'btn btn-default' %></p>
+	<p><%= link_to 'Complete words', class: 'btn btn-default' %></p>
+</section>
+<div class="clear"></div>
